@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure AI Foundry Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Azure AI Foundry Chat</h1>
+        </header>
+        <main class="chat-container">
+            <div class="messages-container" id="messages-container">
+                <div class="welcome-message">
+                    <h2>Welcome to GCC-H Info Chat</h2>
+                    <p>Type your message below to get started.</p>
+                </BR><p>I have been trained to answer questions about the GCC-H program and Microsoft pricing.</p>
+                </div>
+                <!-- Chat messages will be added here -->
+            </div>
+            <div class="input-container">
+                <textarea 
+                    id="message-input" 
+                    placeholder="Type a message..." 
+                    rows="1"
+                    aria-label="Type a message"></textarea>
+                <button id="send-button" aria-label="Send message">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                    </svg>
+                </button>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
