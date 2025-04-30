@@ -7,9 +7,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-</head>
+</head>     
 <body>
-    <div class="app-container">
+    <div id="password-overlay" class="password-overlay">
+        <div class="password-container">
+            <h2>Enter Password</h2>
+        </BR><p>Please see RSM at Booth #201 for the password to access the Microsoft GGC-H chat demo</p>
+            <div class="password-input-container">
+                <input type="password" id="password-input" placeholder="Password">
+                <button id="password-submit-btn">Submit</button>
+            </div>
+            <p id="password-error" class="password-error"></p>
+        </div>
+    </div>
+    <div class="app-container" id="app-container" style="display: none;">
         <header class="app-header">
             <h1>Azure AI Foundry Chat</h1>
         </header>
@@ -27,7 +38,8 @@
                     id="message-input" 
                     placeholder="Type a message..." 
                     rows="1"
-                    aria-label="Type a message"></textarea>
+                    aria-label="Type a message"
+                    class="message-input"></textarea>
                 <button id="send-button" aria-label="Send message">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                         <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>

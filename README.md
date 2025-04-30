@@ -5,6 +5,7 @@ A web-based chat application running on Node.js that connects to an Azure OpenAI
 ## Features
 
 - Clean, Teams-like chat interface
+- Password protection for accessing the chat interface
 - Streaming responses from Azure AI Foundry
 - Real-time message display
 - Loading indicators during response generation
@@ -38,6 +39,12 @@ AZURE_AIFOUNDRY_ENDPOINTKEY=your_endpoint_key
 AZURE_AIFOUNDRY_ENDPOINTURL=your_endpoint_url
 ```
 
+4. Create a `.env.local` file with the password to access the chat:
+
+```
+PASSWORD=your_secure_password
+```
+
 ## Running the Application
 
 ### Development Mode
@@ -66,6 +73,7 @@ This application is designed to be easily deployed to an Azure Web App in GCC Hi
 2. Configure the application settings to include your environment variables:
    - `AZURE_AIFOUNDRY_ENDPOINTKEY`
    - `AZURE_AIFOUNDRY_ENDPOINTURL`
+   - `PASSWORD` (the password required to access the chat interface)
 3. Deploy the code using your preferred method (Git, GitHub Actions, Azure DevOps)
 
 ## API Endpoints
@@ -74,6 +82,10 @@ This application is designed to be easily deployed to an Azure Web App in GCC Hi
   - Request body: `{ "message": "Your message", "conversationHistory": [] }`
   - Response: Server-sent events with streaming response chunks
 
+- `POST /api/verify-password`: Verify the password to access the chat
+  - Request body: `{ "password": "your_password" }`
+  - Response: `{ "success": true }` or `{ "success": false, "error": "Invalid password" }`
+
 - `GET /api/health`: Health check endpoint
   - Response: `{ "status": "ok" }`
 
@@ -81,7 +93,9 @@ This application is designed to be easily deployed to an Azure Web App in GCC Hi
 
 - The application uses Helmet for setting secure HTTP headers
 - CORS is enabled with default settings
-- No authentication is implemented in this version as per requirements
+- Password protection prevents unauthorized access to the chat interface
+- The password is stored in the server's environment variables
+- Session persistence uses sessionStorage (cleared when browser is closed)
 
 ## License
 

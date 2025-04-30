@@ -132,6 +132,22 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
+// Password verification endpoint
+app.post('/api/verify-password', (req, res) => {
+  const { password } = req.body;
+  const correctPassword = process.env.PASSWORD;
+
+  if (!correctPassword) {
+    return res.status(500).json({ error: 'Password not configured on server' });
+  }
+
+  if (password === correctPassword) {
+    return res.status(200).json({ success: true });
+  } else {
+    return res.status(401).json({ success: false, error: 'Invalid password' });
+  }
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

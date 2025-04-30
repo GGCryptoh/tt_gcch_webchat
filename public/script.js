@@ -2,6 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const messagesContainer = document.getElementById('messages-container');
     const messageInput = document.getElementById('message-input');
     const sendButton = document.getElementById('send-button');
+    const passwordOverlay = document.getElementById('password-overlay');
+    const passwordInput = document.getElementById('password-input');
+    const passwordSubmitBtn = document.getElementById('password-submit-btn');
+    const passwordError = document.getElementById('password-error');
+    const appContainer = document.getElementById('app-container');
     
     // Track conversation history
     let conversationHistory = [];
@@ -11,6 +16,65 @@ document.addEventListener('DOMContentLoaded', () => {
     let messageHistory = [];
     let messageHistoryIndex = -1;
     let currentInputValue = '';
+
+    // Initialize the input field height
+    messageInput.style.height = 'auto';
+    messageInput.style.height = Math.min(messageInput.scrollHeight, 150) + 'px';
+
+    // Check if the user is already authenticated
+    const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
+    if (isAuthenticated) {
+        showChatInterface();
+    }
+    
+    // Handle password submission
+    passwordSubmitBtn.addEventListener('click', verifyPassword);
+    passwordInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            verifyPassword();
+        }
+    });
+
+    // Function to verify password
+    async function verifyPassword() {
+        const password = passwordInput.value.trim();
+        if (!password) {
+            passwordError.textContent = 'Please enter a password';
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/verify-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Store authentication state in session storage
+                sessionStorage.setItem('authenticated', 'true');
+                showChatInterface();
+            } else {
+                passwordError.textContent = 'Invalid password';
+                passwordInput.value = '';
+            }
+        } catch (error) {
+            console.error('Error verifying password:', error);
+            passwordError.textContent = 'An error occurred. Please try again.';
+        }
+    }
+
+    // Function to show chat interface after successful authentication
+    function showChatInterface() {
+        passwordOverlay.style.display = 'none';
+        appContainer.style.display = 'block';
+        // Focus on input after authentication
+        messageInput.focus();
+    }
     
     // Configure marked for safe rendering
     marked.setOptions({
@@ -280,7 +344,4 @@ document.addEventListener('DOMContentLoaded', () => {
         // Set to scrollHeight to expand
         messageInput.style.height = Math.min(messageInput.scrollHeight, 150) + 'px';
     });
-    
-    // Focus input on page load
-    messageInput.focus();
-}); 
+});
