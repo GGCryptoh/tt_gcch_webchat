@@ -7,10 +7,35 @@ document.addEventListener('DOMContentLoaded', () => {
     let conversationHistory = [];
     let isWaitingForResponse = false;
     
+    // Track user input history for up arrow recall
+    let messageHistory = [];
+    let messageHistoryIndex = -1;
+    let currentInputValue = '';
+    
+    // Configure marked for safe rendering
+    marked.setOptions({
+        gfm: true, // GitHub Flavored Markdown
+        breaks: true, // Convert line breaks to <br>
+        sanitize: false // We'll use DOMPurify for sanitization
+    });
+    
+    // Function to safely render markdown
+    function renderMarkdown(text) {
+        // Convert markdown to HTML
+        const rawHtml = marked.parse(text);
+        // Sanitize HTML to prevent XSS
+        return DOMPurify.sanitize(rawHtml);
+    }
+    
     // Function to handle sending messages
     async function sendMessage() {
         const userMessage = messageInput.value.trim();
         if (!userMessage || isWaitingForResponse) return;
+        
+        // Add message to history for up-arrow recall
+        messageHistory.unshift(userMessage);
+        messageHistoryIndex = -1;
+        currentInputValue = '';
         
         // Clear input
         messageInput.value = '';
@@ -74,7 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             const parsed = JSON.parse(data);
                             if (parsed.delta) {
                                 aiResponseText += parsed.delta;
-                                aiMessageText.textContent = aiResponseText;
+                                // Render markdown for AI responses with sanitization
+                                aiMessageText.innerHTML = renderMarkdown(aiResponseText);
                                 // Scroll to bottom
                                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
                             }
@@ -131,7 +157,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const textDiv = document.createElement('div');
         textDiv.className = 'message-text';
-        textDiv.textContent = text;
+        
+        // Apply markdown parsing for AI messages
+        if (role === 'ai' && text) {
+            textDiv.innerHTML = renderMarkdown(text);
+        } else {
+            textDiv.textContent = text;
+        }
         
         contentDiv.appendChild(textDiv);
         messageDiv.appendChild(avatarDiv);
@@ -180,11 +212,64 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle send button click
     sendButton.addEventListener('click', sendMessage);
     
-    // Handle enter key to send message (but allow shift+enter for newline)
+    // Handle keyboard events for message input
     messageInput.addEventListener('keydown', (e) => {
+        // Send message on Enter (but allow shift+enter for newline)
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
+        }
+        
+        // Handle Up arrow to recall previous messages
+        if (e.key === 'ArrowUp') {
+            // If the cursor is at the beginning of the first line
+            if (messageInput.selectionStart === 0 || messageInput.value === '') {
+                e.preventDefault();
+                
+                // If this is the first time pressing up, store current input value
+                if (messageHistoryIndex === -1) {
+                    currentInputValue = messageInput.value;
+                }
+                
+                // Navigate message history if available
+                if (messageHistoryIndex < messageHistory.length - 1) {
+                    messageHistoryIndex++;
+                    messageInput.value = messageHistory[messageHistoryIndex];
+                    
+                    // Place cursor at end of text
+                    setTimeout(() => {
+                        messageInput.selectionStart = messageInput.value.length;
+                        messageInput.selectionEnd = messageInput.value.length;
+                        
+                        // Trigger input event to resize textarea
+                        const inputEvent = new Event('input');
+                        messageInput.dispatchEvent(inputEvent);
+                    }, 0);
+                }
+            }
+        }
+        
+        // Handle Down arrow to recall more recent messages
+        if (e.key === 'ArrowDown' && messageHistoryIndex >= 0) {
+            e.preventDefault();
+            
+            messageHistoryIndex--;
+            if (messageHistoryIndex === -1) {
+                // Restore the current input that was being typed
+                messageInput.value = currentInputValue;
+            } else {
+                messageInput.value = messageHistory[messageHistoryIndex];
+            }
+            
+            // Place cursor at end of text
+            setTimeout(() => {
+                messageInput.selectionStart = messageInput.value.length;
+                messageInput.selectionEnd = messageInput.value.length;
+                
+                // Trigger input event to resize textarea
+                const inputEvent = new Event('input');
+                messageInput.dispatchEvent(inputEvent);
+            }, 0);
         }
     });
     

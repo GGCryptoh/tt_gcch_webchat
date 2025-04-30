@@ -53,6 +53,13 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.messages-container::-webkit-scrollbar {
+    display: none;
 }
 
 /* Welcome message */
@@ -132,6 +139,226 @@ html, body {
     overflow-wrap: break-word;
 }
 
+/* Markdown styles for chat messages */
+.message-text h1,
+.message-text h2,
+.message-text h3,
+.message-text h4,
+.message-text h5,
+.message-text h6 {
+    margin-top: 0.5em;
+    margin-bottom: 0.1em;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #333;
+}
+
+/* First heading has less top margin */
+.message-text h1:first-child,
+.message-text h2:first-child,
+.message-text h3:first-child,
+.message-text h4:first-child,
+.message-text h5:first-child,
+.message-text h6:first-child {
+    margin-top: 0.1em;
+}
+
+/* Section headings with more emphasis but less space */
+.message-text h2 {
+    font-size: 1.25em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.1em;
+    margin-top: 0.4em;
+}
+
+.message-text h1 { font-size: 1.4em; }
+.message-text h3 { font-size: 1.15em; }
+.message-text h4 { font-size: 1.05em; }
+.message-text h5 { font-size: 1em; }
+.message-text h6 { font-size: 0.9em; }
+
+.message-text p {
+    margin-bottom: 0.1em;
+    margin-top: 0;
+    line-height: 1.3;
+}
+
+.message-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Tighten up spacing between paragraph and following heading */
+.message-text p + h1,
+.message-text p + h2,
+.message-text p + h3,
+.message-text p + h4,
+.message-text p + h5,
+.message-text p + h6 {
+    margin-top: 0.3em;
+}
+
+/* Extreme compact mode for sections */
+.message-text ul + h2,
+.message-text ol + h2 {
+    margin-top: 0.1em;
+}
+
+.message-text a {
+    color: #0078d4;
+    text-decoration: none;
+}
+
+.message-text a:hover {
+    text-decoration: underline;
+}
+
+.message-text strong,
+.message-text b {
+    font-weight: 600;
+}
+
+.message-text em,
+.message-text i {
+    font-style: italic;
+}
+
+.message-text code {
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 0.2em 0.4em;
+    font-size: 0.85em;
+    background-color: rgba(0, 0, 0, 0.06);
+    border-radius: 3px;
+}
+
+.message-text pre {
+    background-color: rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+    padding: 0.4em;
+    overflow-x: auto;
+    margin: 0.2em 0;
+}
+
+.message-text pre code {
+    background-color: transparent;
+    padding: 0;
+    font-size: 0.9em;
+    white-space: pre;
+}
+
+.message-text blockquote {
+    border-left: 3px solid #c7c7c7;
+    padding-left: 0.8em;
+    color: #666;
+    margin: 0.2em 0;
+}
+
+.message-text ul,
+.message-text ol {
+    margin: 0;
+    padding-left: 1.5em;
+    line-height: 1.2;
+}
+
+.message-text li {
+    margin: 0;
+    padding: 0;
+}
+
+.message-text li + li {
+    margin-top: 0;
+}
+
+/* Handle nested lists */
+.message-text ul ul,
+.message-text ol ol,
+.message-text ul ol,
+.message-text ol ul {
+    margin: 0;
+}
+
+/* Adjust spacing between list items and headings */
+.message-text h1 + ul,
+.message-text h2 + ul,
+.message-text h3 + ul,
+.message-text h4 + ul,
+.message-text h5 + ul,
+.message-text h6 + ul,
+.message-text h1 + ol,
+.message-text h2 + ol,
+.message-text h3 + ol,
+.message-text h4 + ol,
+.message-text h5 + ol,
+.message-text h6 + ol {
+    margin-top: 0;
+}
+
+/* Tighten spacing between lists and paragraphs */
+.message-text ul + p,
+.message-text ol + p {
+    margin-top: 0.1em;
+}
+
+.message-text p + ul,
+.message-text p + ol {
+    margin-top: 0;
+}
+
+/* Style for ordered lists - compact numbering */
+.message-text ol {
+    counter-reset: item;
+    list-style-type: none;
+    margin: 0;
+    padding-left: 1.5em;
+}
+
+.message-text ol > li {
+    counter-increment: item;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.message-text ol > li:before {
+    content: counter(item) ".";
+    position: absolute;
+    left: -1.3em;
+    width: 1em;
+    text-align: right;
+    color: #555;
+}
+
+.message-text table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.4em 0;
+}
+
+.message-text table th,
+.message-text table td {
+    border: 1px solid #ddd;
+    padding: 4px 8px;
+    text-align: left;
+}
+
+.message-text table th {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+.message-text hr {
+    height: 1px;
+    background-color: #ddd;
+    border: none;
+    margin: 0.4em 0;
+}
+
+.message-text img {
+    max-width: 100%;
+    height: auto;
+    margin: 0.2em 0;
+    border-radius: 4px;
+}
+
 /* Input container */
 .input-container {
     display: flex;
@@ -152,6 +379,13 @@ textarea {
     background-color: #fff;
     transition: border-color 0.2s;
     outline: none;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+textarea::-webkit-scrollbar {
+    display: none;
 }
 
 textarea:focus {
@@ -215,14 +449,15 @@ textarea:focus {
     }
 }
 
-/* Add responsive adjustments for small screens */
+/* Responsive adjustments */
 @media (max-width: 576px) {
     .message {
         max-width: 95%;
     }
     
     .message-avatar {
-        margin: 0 6px;
+        width: 32px;
+        height: 32px;
     }
     
     .message-content {
